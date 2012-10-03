@@ -3,7 +3,22 @@
 
   $(function() {
     var $copy;
-    return $copy = $(".container").splitToLines().animateLines();
+    $copy = $(".container").first().splitToLines({
+      resizable: true
+    }).animateLines({
+      css: {
+        top: "+=30",
+        opacity: 0
+      },
+      duration: .4,
+      ease: Quint.easeOut,
+      stagger: .03,
+      autoplay: true,
+      onComplete: function() {
+        return log("in complete.");
+      }
+    });
+    return window.container = $copy;
   });
 
 }).call(this);

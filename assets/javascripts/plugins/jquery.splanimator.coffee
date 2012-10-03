@@ -6,26 +6,46 @@
 #  * Licensed under the MIT license.
 #  * Copyright 2012 Scott Baggett
 
+#  * Dependencies:
+#
+#     * Response.js 
+#     * Underscore.js
+#     * jQuery
+
 $.fn.splitToLines = (options={}) ->
 
+  # Response.action ->
+    # split_to_elements()
+
   split_to_elements = (copy, options={}) =>
+
     separator = options.separator or " "
     tagName = options.tagName or "span"
+
+    # store original source
+    # to be recreated. on resize.
+    
+    if @.data "source"
+      @.html @.data "source"
+    else
+      @.data "source", @.html()
+    
     html = ""
-    items = $source.html().split(separator)
+    items = $(".source").html().split(separator)
     _.each items, (word, i) =>
       spacer = if i < items.length - 1 then " " else ""
       html += "<#{tagName}>#{word}#{spacer}</#{tagName}>"
-    log html
+    # log html
     return html
 
-
+  # init_resize() if options.resizable
 
   source = options.source || ".source"
-  $source = $(source, this)
+  $source = $(".source")
+  log $source
 
   # slit each word in to elements
-  elements = split_to_elements($source.html())
+  elements = split_to_elements($source.html(), options)
   elements = $(this).html(elements).children()
 
   # group elements by top offset (lines)
@@ -47,19 +67,26 @@ $.fn.splitToLines = (options={}) ->
   this
 
 $.fn.animateLines = (options={}) ->
-    
-    # animate each line in
-    $(".line").each (i,line) ->
-      $(@).css
-        position: "absolute"
-        top: i * $(@).height()
+  options.duration = .3
+  options.stagger ||= 0.3
+  options.css ||= {}
+  options.delay = .02
+  $(".line").each (i,line) =>
+    $(line).css
+      position: "absolute"
+      top: i * $(line).height()
 
-      TweenMax.from $(line), .24
-        css:
-          top: "+=35"
-          opacity: 0
-          scale: .3
-        delay: i*.055
-        ease: Back.easeOut
+  # animate each line in
+  tl = new TimelineMax(onComplete: options.onComplete)
+  tl.stop()
+  tl.staggerFrom $(".line"), .4
+    css: options.css
+    ease: options.ease
+    options.stagger
+  tl.play() if options.autoplay
 
-    this
+
+
+
+  return this
+

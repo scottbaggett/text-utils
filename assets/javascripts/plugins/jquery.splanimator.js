@@ -14,19 +14,24 @@
       }
       separator = options.separator || " ";
       tagName = options.tagName || "span";
+      if (_this.data("source")) {
+        _this.html(_this.data("source"));
+      } else {
+        _this.data("source", _this.html());
+      }
       html = "";
-      items = $source.html().split(separator);
+      items = $(".source").html().split(separator);
       _.each(items, function(word, i) {
         var spacer;
         spacer = i < items.length - 1 ? " " : "";
         return html += "<" + tagName + ">" + word + spacer + "</" + tagName + ">";
       });
-      log(html);
       return html;
     };
     source = options.source || ".source";
-    $source = $(source, this);
-    elements = split_to_elements($source.html());
+    $source = $(".source");
+    log($source);
+    elements = split_to_elements($source.html(), options);
     elements = $(this).html(elements).children();
     groups = _.groupBy(elements, function(element) {
       return $(element).offset().top;
@@ -47,24 +52,32 @@
   };
 
   $.fn.animateLines = function(options) {
+    var tl,
+      _this = this;
     if (options == null) {
       options = {};
     }
+    options.duration = .3;
+    options.stagger || (options.stagger = 0.3);
+    options.css || (options.css = {});
+    options.delay = .02;
     $(".line").each(function(i, line) {
-      $(this).css({
+      return $(line).css({
         position: "absolute",
-        top: i * $(this).height()
-      });
-      return TweenMax.from($(line), .24, {
-        css: {
-          top: "+=35",
-          opacity: 0,
-          scale: .3
-        },
-        delay: i * .055,
-        ease: Back.easeOut
+        top: i * $(line).height()
       });
     });
+    tl = new TimelineMax({
+      onComplete: options.onComplete
+    });
+    tl.stop();
+    tl.staggerFrom($(".line"), .4, {
+      css: options.css,
+      ease: options.ease
+    }, options.stagger);
+    if (options.autoplay) {
+      tl.play();
+    }
     return this;
   };
 
