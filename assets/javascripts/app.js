@@ -3,17 +3,16 @@
 
   $(function() {
     var $copy;
-    $copy = $(".container").first().splitToLines({
+    $copy = $(".container").first().splitTo({
+      split_to_lines: true,
       resizable: true
     }).animateLines({
       css: {
-        top: "+=30",
-        opacity: 0
+        top: "-=60"
       },
-      duration: .4,
+      duration: .5,
       ease: Quint.easeOut,
-      stagger: .03,
-      autoplay: true,
+      stagger: .1,
       onComplete: function() {
         return log("in complete.");
       }
