@@ -7,10 +7,10 @@ $ ->
   )
   .animateLines(
     css:
-      top: "-=60"
+      top: "+=60"
 
     duration: .5
-    ease: Quint.easeOut
+    ease: Power2.easeIn
     stagger: .1
     onComplete: ->
       log "in complete."
