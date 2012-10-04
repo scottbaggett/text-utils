@@ -76,7 +76,6 @@
       @to_words()
       @to_lines() if settings.lines
       @set_css() if settings.lines
-      log $(this)
 
   this
 ) this.jQuery

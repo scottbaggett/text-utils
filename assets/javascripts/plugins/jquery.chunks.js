@@ -78,9 +78,8 @@
           _this.to_lines();
         }
         if (settings.lines) {
-          _this.set_css();
+          return _this.set_css();
         }
-        return log($(_this));
       });
     }
   });
